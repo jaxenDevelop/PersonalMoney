@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
@@ -22,12 +23,13 @@ import static android.view.Gravity.CENTER;
 
 public class NoteMoneyFragment extends Fragment implements View.OnClickListener {
 
-    private AppCompatButton addItem;
+    private FloatingActionButton addItem;
     private TableLayout tableLayout;
     private SharedPreferences sp;
     private Handler handler;
     private int CurrentMoney;
     private MoneyDataBase db;
+    private SQLiteDatabase sqLiteDatabase;
 
     @SuppressLint("HandlerLeak")
     @Nullable
@@ -60,7 +62,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
     private void initDataBase()
     {
-
+        sqLiteDatabase = db.getReadableDatabase();
     }
 
     @Override
