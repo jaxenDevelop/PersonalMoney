@@ -39,7 +39,6 @@
                     android:hint="时间"
                     android:gravity="center"
                     android:textSize="19sp"
-                    android:inputType="datetime"
                     android:textColor="#333333"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

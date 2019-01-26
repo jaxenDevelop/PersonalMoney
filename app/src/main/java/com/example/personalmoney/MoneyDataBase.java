@@ -8,15 +8,13 @@ import android.support.annotation.Nullable;
 
 public class MoneyDataBase extends SQLiteOpenHelper
 {
-
-
     public MoneyDataBase(Context context) {
         super(context, "money.db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table mymoney (id integer primary key autoincrement,"+"date date,"+"amount integer,"+"other TEXT); ");
+        db.execSQL("create table mymoney (id integer primary key autoincrement,"+"date TEXT,"+"amount integer,"+"other TEXT); ");
     }
 
     @Override

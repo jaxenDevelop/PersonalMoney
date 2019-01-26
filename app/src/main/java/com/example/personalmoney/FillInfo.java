@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,6 +49,7 @@ public class FillInfo extends AppCompatActivity implements View.OnClickListener 
         intent = new Intent();
         train_online = findViewById(R.id.train_online);
         train_offline = findViewById(R.id.train_offline);
+
         other = findViewById(R.id.other);
     }
 

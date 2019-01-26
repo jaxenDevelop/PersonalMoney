@@ -16,71 +16,171 @@
         app:titleMargin="@dimen/activity_horizontal_margin">
     </android.support.v7.widget.Toolbar>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/addItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
+        android:orientation="horizontal"
         android:layout_marginTop="16dp"
-        android:layout_gravity="center"
-        android:textSize="19sp"
-        android:src="@drawable/ic_add_white_24dp"
-        app:fabSize="auto"
-        android:backgroundTint="#db5a6b"
-        android:text="@string/addItem"
-        android:textColor="#FFFFFF" />
-
-    <ScrollView
+        android:layout_marginEnd="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableLayout
-            android:id="@+id/tableLayout"
-            android:orientation="vertical"
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/setCurrentMoney"
+            android:text="总金额"
+            android:textSize="20sp"
+            android:background="@drawable/button_shape"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:showDividers="middle|beginning|end"
-            android:stretchColumns="0,1,2"
+            android:layout_alignTop="@+id/addItem"
+            android:layout_alignBottom="@+id/addItem"
+            android:layout_centerVertical="true"
+            android:textColor="@color/colorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/showCurrentMoney"
+            android:text="500000"
+            android:textSize="25sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/setCurrentMoney"
+            android:layout_toLeftOf="@+id/addItem"
+            android:layout_marginEnd="48dp"
+            android:layout_marginStart="48dp"
+            android:gravity="center"
+            android:textColor="#a78e44"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="19sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_add_white_24dp"
+            app:fabSize="auto"
+            android:backgroundTint="#db5a6b"
+            android:text="@string/addItem"
+            android:textColor="#FFFFFF" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:background="#758a99"
+        android:layout_height="1dp" />
+
+    <ScrollView
+        android:scrollbars="vertical"
+        android:fadingEdge="vertical"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="350dp">
+
+        <LinearLayout
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TableRow>
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:divider="@drawable/divider_v"
+                android:showDividers="middle|end"
+                android:stretchColumns="0,1,2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:text="时间"
-                    android:textColor="@color/colorWhite"
-                    android:layout_height="35dp"
-                    android:gravity="center"
-                    android:background="#40de5a"
-                    android:layout_weight="1"
-                    android:textSize="19sp"/>
+                <TableRow>
 
-                <TextView
-                    android:text="金额"
-                    android:layout_height="35dp"
-                    android:textColor="@color/colorWhite"
-                    android:gravity="center"
-                    android:background="#1bd1a5"
-                    android:layout_weight="1"
-                    android:textSize="19sp"/>
+                    <TextView
+                        android:text="时间"
+                        android:textColor="@color/colorWhite"
+                        android:layout_height="35dp"
+                        android:gravity="center"
+                        android:background="#40de5a"
+                        android:layout_weight="1"
+                        android:textSize="19sp"/>
 
-                <TextView
-                    android:text="备注"
-                    android:layout_height="35dp"
-                    android:textColor="@color/colorWhite"
-                    android:gravity="center"
-                    android:background="#db8449"
-                    android:layout_weight="1"
-                    android:textSize="19sp"/>
-            </TableRow>
+                    <TextView
+                        android:text="金额"
+                        android:layout_height="35dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="center"
+                        android:background="#1bd1a5"
+                        android:layout_weight="1"
+                        android:textSize="19sp"/>
+
+                    <TextView
+                        android:text="备注"
+                        android:layout_height="35dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="center"
+                        android:background="#db8449"
+                        android:layout_weight="1"
+                        android:textSize="19sp"/>
+                </TableRow>
+
+            </TableLayout>
+
+        </LinearLayout>
 
 
-
-        </TableLayout>
 
     </ScrollView>
 
+    <RelativeLayout
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/parentMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="父母余额："
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/myMoney"
+            android:layout_below="@+id/parentMoney"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="自己金额："
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/showParentMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/parentMoney"
+            android:layout_alignBottom="@+id/parentMoney"
+            android:layout_marginStart="32dp"
+            android:text="0.0"
+            android:layout_toRightOf="@+id/parentMoney"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textColor="#a78e44" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/showMyMoney"
+            android:layout_below="@+id/showParentMoney"
+            android:layout_alignTop="@+id/myMoney"
+            android:layout_alignBottom="@+id/myMoney"
+            android:layout_toRightOf="@+id/myMoney"
+            android:layout_marginStart="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#a78e44"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    </RelativeLayout>
 
 </LinearLayout>
