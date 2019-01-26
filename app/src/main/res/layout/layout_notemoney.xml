@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:buttonGravity="top"
+        app:title="@string/title_home"
+        app:titleTextColor="#FFFFFF"
+        android:background="#00bcd4"
+        app:layout_collapseMode="pin"
+        app:titleMargin="@dimen/activity_horizontal_margin">
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/addItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:textSize="19sp"
+        android:background="@drawable/button_shape"
+        android:text="@string/addItem"
+        android:textColor="#FFFFFF" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:orientation="vertical"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:showDividers="middle|beginning|end"
+            android:stretchColumns="0,1,2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow>
+
+                <TextView
+                    android:text="时间"
+                    android:textColor="@color/colorWhite"
+                    android:layout_height="35dp"
+                    android:gravity="center"
+                    android:background="#40de5a"
+                    android:layout_weight="1"
+                    android:textSize="19sp"/>
+
+                <TextView
+                    android:text="金额"
+                    android:layout_height="35dp"
+                    android:textColor="@color/colorWhite"
+                    android:gravity="center"
+                    android:background="#1bd1a5"
+                    android:layout_weight="1"
+                    android:textSize="19sp"/>
+
+                <TextView
+                    android:text="备注"
+                    android:layout_height="35dp"
+                    android:textColor="@color/colorWhite"
+                    android:gravity="center"
+                    android:background="#db8449"
+                    android:layout_weight="1"
+                    android:textSize="19sp"/>
+            </TableRow>
+
+
+
+        </TableLayout>
+
+    </ScrollView>
+
+
+
+
+</LinearLayout>
