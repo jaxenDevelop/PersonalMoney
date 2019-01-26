@@ -14,7 +14,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -28,7 +27,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
     private SharedPreferences sp;
     private Handler handler;
     private int CurrentMoney;
-    private MoneyDataBase helper;
+    private MoneyDataBase db;
 
     @SuppressLint("HandlerLeak")
     @Nullable
@@ -42,7 +41,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
         sp = getActivity().getSharedPreferences("AllMoneyFile", 0);
 
-        helper = new MoneyDataBase(getActivity());
+        db = new MoneyDataBase(getActivity());
 
 
         handler = new Handler()
@@ -53,7 +52,14 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                 tableLayout.addView((View) msg.obj);
             }
         };
+
+        initDataBase();
         return view;
+
+    }
+
+    private void initDataBase()
+    {
 
     }
 
@@ -84,7 +90,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         String amount = data.getStringExtra("AMOUNT");
                         String other = data.getStringExtra("OTHER");
 
-                        SQLiteDatabase db = helper.getWritableDatabase();
+                        SQLiteDatabase db = NoteMoneyFragment.this.db.getWritableDatabase();
                         db.execSQL("insert into mymoney(date, amount, other) values"+"(" + time +","+ amount+"," + "'"+other + "'"+ ")");
 
                         TextView timeText = new TextView(getActivity());
