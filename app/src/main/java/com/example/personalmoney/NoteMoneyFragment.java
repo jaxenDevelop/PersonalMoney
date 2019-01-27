@@ -2,7 +2,6 @@ package com.example.personalmoney;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,15 +22,14 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import static android.view.Gravity.CENTER;
-import static com.example.personalmoney.R.drawable.divider_h;
-import static com.example.personalmoney.R.drawable.divider_v;
 
 public class NoteMoneyFragment extends Fragment implements View.OnClickListener {
 
@@ -84,6 +81,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                     case 0:
                         tableLayout.addView((View) msg.obj);
                         showParentMoney.setText(parentMoney+"");
+                        System.out.println("handlerparent:"+parentMoney);
                         myMoney = currentMoney - (float) parentMoney;
                         showMyMoney.setText(myMoney+"");
                     break;
@@ -109,6 +107,32 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
     }
 
+    private TableRow insertData(String date, String amount, String other)
+    {
+        TextView timeText = new TextView(getActivity());
+        timeText.setText(date);
+        timeText.setGravity(CENTER);
+        timeText.setTextSize(20);
+
+
+        TextView amountText = new TextView(getActivity());
+        amountText.setText(amount);
+        amountText.setGravity(CENTER);
+        amountText.setTextSize(20);
+
+        TextView otherText = new TextView(getActivity());
+        other =  other == null ? "55":other;
+        otherText.setText(other);
+        otherText.setGravity(CENTER);
+        otherText.setTextSize(20);
+
+        TableRow tableRow = new TableRow(getActivity());
+        tableRow.addView(timeText);
+        tableRow.addView(amountText);
+        tableRow.addView(otherText);
+
+        return tableRow;
+    }
     private void initDataBaseData() {
         sqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
@@ -122,19 +146,19 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                 TextView timeText = new TextView(getActivity());
                 timeText.setText(date);
                 timeText.setGravity(CENTER);
-                timeText.setTextSize(20);
+                timeText.setTextSize(22);
 
 
                 TextView amountText = new TextView(getActivity());
                 amountText.setText(amount);
                 amountText.setGravity(CENTER);
-                amountText.setTextSize(20);
+                amountText.setTextSize(22);
 
                 TextView otherText = new TextView(getActivity());
                 other =  other == null ? "55":other;
                 otherText.setText(other);
                 otherText.setGravity(CENTER);
-                otherText.setTextSize(20);
+                otherText.setTextSize(22);
 
                 TableRow tableRow = new TableRow(getActivity());
                 tableRow.addView(timeText);
@@ -219,18 +243,18 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         TextView timeText = new TextView(getActivity());
                         timeText.setText(time);
                         timeText.setGravity(CENTER);
-                        timeText.setTextSize(20);
+                        timeText.setTextSize(22);
 
 
                         TextView amountText = new TextView(getActivity());
                         amountText.setText(amount);
                         amountText.setGravity(CENTER);
-                        amountText.setTextSize(20);
+                        amountText.setTextSize(22);
 
                         TextView otherText = new TextView(getActivity());
                         otherText.setText(other);
                         otherText.setGravity(CENTER);
-                        otherText.setTextSize(20);
+                        otherText.setTextSize(22);
 
                         TableRow tableRow = new TableRow(getActivity());
                         tableRow.addView(timeText);
@@ -240,15 +264,19 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         Message message = Message.obtain();
                         message.what = 0;
                         message.obj = tableRow;
-                        handler.sendMessage(message);
-
-                        SharedPreferences.Editor editor = sp.edit();
-                        CurrentMoney = sp.getInt("CurrentMoney", 0);
-                        int NewCurrentMoney = Integer.parseInt(amount) + CurrentMoney;
-                        editor.putInt("CurrentMoney", NewCurrentMoney);
-                        editor.commit();
 
                         parentMoney += Integer.parseInt(amount);
+
+                        handler.sendMessage(message);
+
+//                        SharedPreferences.Editor editor = sp.edit();
+//                        CurrentMoney = sp.getInt("CurrentMoney", 0);
+//                        int NewCurrentMoney = Integer.parseInt(amount) + CurrentMoney;
+//                        editor.putInt("CurrentMoney", NewCurrentMoney);
+//                        editor.commit();
+
+
+                        System.out.println("parent:"+parentMoney);
 
                     }
                 }.start();

@@ -1,6 +1,7 @@
 package com.example.personalmoney;
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,11 +59,19 @@ public class FillInfo extends AppCompatActivity implements View.OnClickListener 
         switch (v.getId())
         {
             case R.id.ok:
-                intent.putExtra("TIME", train_online.getText().toString());
-                intent.putExtra("AMOUNT", train_offline.getText().toString());
-                intent.putExtra("OTHER", other.getText().toString());
-                setResult(1, intent);
-                finish();
+                if (train_online.getText().toString().equals("") || train_offline.getText().toString().equals(""))
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("日期和金额不能为空").setPositiveButton("ok", null).show();
+                }
+                else {
+                    intent.putExtra("TIME", train_online.getText().toString());
+                    intent.putExtra("AMOUNT", train_offline.getText().toString());
+                    intent.putExtra("OTHER", other.getText().toString());
+                    setResult(1, intent);
+                    finish();
+                }
+
                 break;
 
         }
