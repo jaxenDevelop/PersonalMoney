@@ -42,7 +42,6 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
     private int CurrentMoney;
     private MoneyDataBase dbHelper;
     private SQLiteDatabase sqLiteDatabase;
-    private AppCompatTextView setCurrentMoney;
 
     private AppCompatTextView showCurrentMoney, showParentMoney, showMyMoney;
     private static int parentMoney = 0;
@@ -101,8 +100,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
         initDataBaseData();
 
-        setCurrentMoney = view.findViewById(R.id.setCurrentMoney);
-        setCurrentMoney.setOnClickListener(this);
+        showCurrentMoney.setOnClickListener(this);
         float initMyMoney = Float.parseFloat(str) - (float) parentMoney;
         showMyMoney.setText(initMyMoney+"");
         return view;
@@ -114,19 +112,19 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         TextView timeText = new TextView(getActivity());
         timeText.setText(date);
         timeText.setGravity(CENTER);
-        timeText.setTextSize(20);
+        timeText.setTextSize(22);
 
 
         TextView amountText = new TextView(getActivity());
         amountText.setText(amount);
         amountText.setGravity(CENTER);
-        amountText.setTextSize(20);
+        amountText.setTextSize(22);
 
         TextView otherText = new TextView(getActivity());
         other =  other == null ? "55":other;
         otherText.setText(other);
         otherText.setGravity(CENTER);
-        otherText.setTextSize(20);
+        otherText.setTextSize(22);
 
         TableRow tableRow = new TableRow(getActivity());
         tableRow.addView(timeText);
@@ -188,7 +186,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                 startActivityForResult(intent, 1);
                 break;
 
-            case R.id.setCurrentMoney:
+            case R.id.showCurrentMoney:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 final EditText editText = new EditText(getActivity());
                 editText.setHint(showCurrentMoney.getText());
