@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -25,9 +26,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.roger.gifloadinglibrary.GifLoadingView;
 
 import java.util.ArrayList;
 
@@ -64,10 +69,10 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
         sp = getActivity().getSharedPreferences("AllMoneyFile", Context.MODE_PRIVATE);
         sharedPreferences = getActivity().getSharedPreferences("MyCurrentAllMoney", Context.MODE_PRIVATE);
-        String str = sharedPreferences.getString("account", "0");
-        currentMoney = Float.parseFloat(str);
+        Float str = sharedPreferences.getFloat("account", 0.0f);
+        currentMoney = str;
 
-        showCurrentMoney.setText(str);
+        showCurrentMoney.setText(str+"");
 
         dbHelper = new MoneyDataBase(getActivity());
 
@@ -82,7 +87,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                     case 0:
                         tableLayout.addView((View) msg.obj);
                         showParentMoney.setText(parentMoney+"");
-                        System.out.println("handlerparent:"+parentMoney);
+                        System.out.println("sendMessage:"+parentMoney);
                         myMoney = currentMoney - (float) parentMoney;
                         showMyMoney.setText(myMoney+"");
                     break;
@@ -101,42 +106,95 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         initDataBaseData();
 
         showCurrentMoney.setOnClickListener(this);
-        float initMyMoney = Float.parseFloat(str) - (float) parentMoney;
+        float initMyMoney = str - (float) parentMoney;
         showMyMoney.setText(initMyMoney+"");
         return view;
 
     }
 
-    private TableRow insertData(String date, String amount, String other)
+
+    private void addDefaultData(ContentValues cs, SQLiteDatabase sd, String date, int amount, String other)
     {
-        TextView timeText = new TextView(getActivity());
-        timeText.setText(date);
-        timeText.setGravity(CENTER);
-        timeText.setTextSize(22);
-
-
-        TextView amountText = new TextView(getActivity());
-        amountText.setText(amount);
-        amountText.setGravity(CENTER);
-        amountText.setTextSize(22);
-
-        TextView otherText = new TextView(getActivity());
-        other =  other == null ? "55":other;
-        otherText.setText(other);
-        otherText.setGravity(CENTER);
-        otherText.setTextSize(22);
-
-        TableRow tableRow = new TableRow(getActivity());
-        tableRow.addView(timeText);
-        tableRow.addView(amountText);
-        tableRow.addView(otherText);
-
-        return tableRow;
+        cs.clear();
+        cs.put("date", date);
+        cs.put("amount", amount);
+        cs.put("other", other);
+        sd.insert("mymoney", null, cs);
     }
+
     private void initDataBaseData() {
         sqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
-        if (cursor != null && cursor.moveToFirst()) {
+        ContentValues contentValues = new ContentValues();
+        if (!cursor.moveToFirst())
+        {
+            cursor.close();
+            addDefaultData(contentValues, sqLiteDatabase,"2018-02-27", 125100, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-03-18", -5000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-03-26", -8000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-04-09", -2000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-04-11", -4000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-07-20", 60000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-08-07", -10000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-08-08", -20000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-08-09", -30000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-10-17", 4935, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-01", 140000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-02", -50000, "保证金");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-07", -2000, "担保费");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-08", 195000, "妈妈转入");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 300000, "姐姐转入");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 400000, "爸爸转入");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-11", -700000, "购房首付款");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-22", -5000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-23", -10000, "无");
+
+            /**读数据**/
+            final Cursor cursorNew = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
+
+            if (cursorNew.moveToFirst())
+            {
+                do {
+                    String date = cursorNew.getString(cursorNew.getColumnIndex("date"));
+                    String amount = cursorNew.getString(cursorNew.getColumnIndex("amount"));
+                    String other = cursorNew.getString(cursorNew.getColumnIndex("other"));
+
+                    TextView timeText = new TextView(getActivity());
+                    timeText.setText(date);
+                    timeText.setGravity(CENTER);
+                    timeText.setTextSize(22);
+
+
+                    TextView amountText = new TextView(getActivity());
+                    amountText.setText(amount);
+                    amountText.setGravity(CENTER);
+                    amountText.setTextSize(22);
+
+                    TextView otherText = new TextView(getActivity());
+                    other =  other == null ? "无":other;
+                    otherText.setText(other);
+                    otherText.setGravity(CENTER);
+                    otherText.setTextSize(22);
+
+                    TableRow tableRow = new TableRow(getActivity());
+                    tableRow.addView(timeText);
+                    tableRow.addView(amountText);
+                    tableRow.addView(otherText);
+
+                    Message message = Message.obtain();
+                    message.what = 0;
+                    message.obj = tableRow;
+                    handler.sendMessage(message);
+
+                    parentMoney += Integer.parseInt(amount);
+
+                }while (cursorNew.moveToNext());
+            }
+
+            Toast.makeText(getActivity(),"初始化数据库完成！", Toast.LENGTH_LONG).show();
+        }
+
+        else if (cursor != null && cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(cursor.getColumnIndex("date"));
                 String amount = cursor.getString(cursor.getColumnIndex("amount"));
@@ -172,8 +230,6 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
                 parentMoney += Integer.parseInt(amount);
             } while (cursor.moveToNext());
-
-
         }
     }
 
@@ -188,14 +244,28 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
             case R.id.showCurrentMoney:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                final EditText editText = new EditText(getActivity());
-                editText.setHint(showCurrentMoney.getText());
-                editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                builder.setTitle("设置当前账户总金额").setView(editText).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                LinearLayout linearLayout = new LinearLayout(getActivity());
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                final EditText jdText = new EditText(getActivity());
+                final EditText bankText = new EditText(getActivity());
+                final TextView addText = new TextView(getActivity());
+                jdText.setHint("理财产品总金额");
+                jdText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                bankText.setHint("银行卡总金额");
+                bankText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                addText.setText("+");
+                addText.setTextSize(22);
+                addText.setTextColor(Color.parseColor("#000000"));
+                addText.setGravity(CENTER);
+                linearLayout.addView(jdText);
+                linearLayout.addView(addText);
+                linearLayout.addView(bankText);
+                builder.setTitle("设置当前账户总金额").setView(linearLayout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        final float AllMoney = Float.parseFloat(jdText.getText().toString())+ Float.parseFloat(bankText.getText().toString());
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("account", editText.getText().toString());
+                        editor.putFloat("account", AllMoney);
                         editor.commit();
                         new Thread()
                         {
@@ -204,7 +274,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                                 super.run();
                                 Message message = Message.obtain();
                                 message.what = 1;
-                                message.obj = editText.getText();
+                                message.obj = AllMoney;
                                 handler.sendMessage(message);
                             }
                         }.start();
@@ -232,7 +302,6 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         String other = data.getStringExtra("OTHER");
 
                         sqLiteDatabase = dbHelper.getWritableDatabase();
-//                        sqLiteDatabase.execSQL("insert into mymoney(date, amount, other) values"+"(" + time +","+ amount+"," + "'"+other + "'"+ ")");
 
                         ContentValues contentValues = new ContentValues();
                         contentValues.put("date", time);
@@ -268,13 +337,6 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         parentMoney += Integer.parseInt(amount);
 
                         handler.sendMessage(message);
-
-//                        SharedPreferences.Editor editor = sp.edit();
-//                        CurrentMoney = sp.getInt("CurrentMoney", 0);
-//                        int NewCurrentMoney = Integer.parseInt(amount) + CurrentMoney;
-//                        editor.putInt("CurrentMoney", NewCurrentMoney);
-//                        editor.commit();
-
 
                         System.out.println("parent:"+parentMoney);
 
