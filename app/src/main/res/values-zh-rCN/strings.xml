@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">个人应用</string>
-    <string name="title_home">记账</string>
+    <string name="title_home">资产</string>
     <string name="addItem">新增</string>
 </resources>
