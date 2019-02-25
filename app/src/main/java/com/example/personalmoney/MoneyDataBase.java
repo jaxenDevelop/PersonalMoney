@@ -3,8 +3,6 @@ package com.example.personalmoney;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class MoneyDataBase extends SQLiteOpenHelper
 {
@@ -14,7 +12,8 @@ public class MoneyDataBase extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table mymoney (id integer primary key autoincrement,"+"date TEXT,"+"amount integer,"+"other TEXT); ");
+//        db.execSQL("create table mymoney (id integer primary key autoincrement,"+"date TEXT,"+"amount integer,"+"other TEXT); ");
+        db.execSQL("create table mymoney (id integer primary key autoincrement, date TEXT, amount integer, other TEXT);");
     }
 
     @Override

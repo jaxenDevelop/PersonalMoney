@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:buttonGravity="top"
-        app:title="资产"
+        app:title="购房花费统计"
         app:titleTextColor="#FFFFFF"
         android:background="#00bcd4"
         app:layout_collapseMode="pin"

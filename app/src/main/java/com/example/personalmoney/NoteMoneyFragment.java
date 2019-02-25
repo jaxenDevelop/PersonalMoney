@@ -2,6 +2,7 @@ package com.example.personalmoney;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -52,6 +53,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
     private static int parentMoney = 0;
     private static float myMoney = 0.0f;
     private static float currentMoney = 0.0f;
+    private static int newAddMoney = 0;
 
     @SuppressLint("HandlerLeak")
     @Nullable
@@ -87,8 +89,14 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                     case 0:
                         tableLayout.addView((View) msg.obj);
                         showParentMoney.setText(parentMoney+"");
+                        currentMoney += newAddMoney;
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putFloat("account", currentMoney);
+                        editor.commit();
+                        showCurrentMoney.setText(currentMoney+"");
                         System.out.println("sendMessage:"+parentMoney);
                         myMoney = currentMoney - (float) parentMoney;
+                        System.out.println("ceshi :"+myMoney);
                         showMyMoney.setText(myMoney+"");
                     break;
 
@@ -148,6 +156,13 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
             addDefaultData(contentValues, sqLiteDatabase,"2019-01-11", -700000, "购房首付款");
             addDefaultData(contentValues, sqLiteDatabase,"2019-01-22", -5000, "无");
             addDefaultData(contentValues, sqLiteDatabase,"2019-01-23", -10000, "无");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-03", 40000, "爸爸转入");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-09", 115000, "农商行转入");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-11", 102107, "邮政储蓄转入");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -530000, "首付款第二批");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -10000, "中介费");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -97413, "契税增值税");
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -2500, "打点费");
 
             /**读数据**/
             final Cursor cursorNew = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
@@ -263,22 +278,30 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                 builder.setTitle("设置当前账户总金额").setView(linearLayout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final float AllMoney = Float.parseFloat(jdText.getText().toString())+ Float.parseFloat(bankText.getText().toString());
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putFloat("account", AllMoney);
-                        editor.commit();
-                        new Thread()
+
+                        try {
+                            final float AllMoney = Float.parseFloat(jdText.getText().toString()) + Float.parseFloat(bankText.getText().toString());
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putFloat("account", AllMoney);
+                            editor.commit();
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    super.run();
+                                    Message message = Message.obtain();
+                                    message.what = 1;
+                                    message.obj = AllMoney;
+                                    handler.sendMessage(message);
+                                }
+                            }.start();
+                        }
+                        catch (NumberFormatException e)
                         {
-                            @Override
-                            public void run() {
-                                super.run();
-                                Message message = Message.obtain();
-                                message.what = 1;
-                                message.obj = AllMoney;
-                                handler.sendMessage(message);
-                            }
-                        }.start();
-//                        showCurrentMoney.setText(editText.getText());
+                            AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+                            alertDialog.setMessage("输入不能为空！").show();
+                        }
+
+
                     }
                 }).show();
                 break;
@@ -335,6 +358,8 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         message.obj = tableRow;
 
                         parentMoney += Integer.parseInt(amount);
+                        newAddMoney = Integer.parseInt(amount);
+
 
                         handler.sendMessage(message);
 
