@@ -1,8 +1,11 @@
 package com.example.personalmoney;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -32,6 +35,7 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
     private AppCompatTextView showLastYearMoney, showCurrentYearMoney;
     private static float lastYearMoney, currentYearMoney;
     private Handler handler;
+    private android.support.v7.widget.Toolbar initPayFor;
     private TableLayout tableLayout;
     private AppCompatTextView showAllCost;
     private static float allGet = 0.0f;
@@ -76,6 +80,37 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
 
         initDataBaseData();
         setAllCost();
+        initPayFor = view.findViewById(R.id.initPayFor);
+        initPayFor.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("是否重置数据库？")
+                        .setMessage("当前页面数据将恢复初始状态！")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sqLiteDatabase = dbHelper.getWritableDatabase();
+                                sqLiteDatabase.delete("payfor", null,null);
+
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("重置已完成，应用将自动退出！")
+                                        .setMessage("重新打开将导入预置数据").setCancelable(false)
+                                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(getActivity(), Object.class);
+
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }).show();
+                return false;
+            }
+        });
         return view;
     }
 

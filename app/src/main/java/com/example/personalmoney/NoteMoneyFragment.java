@@ -29,6 +29,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import static android.view.Gravity.CENTER;
 
@@ -39,6 +40,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
     private SharedPreferences sp, sharedPreferences;
     private Handler handler;
     private MoneyDataBase dbHelper;
+    private android.support.v7.widget.Toolbar init;
     private SQLiteDatabase sqLiteDatabase;
 
     private AppCompatTextView showCurrentMoney, showParentMoney, showMyMoney;
@@ -56,6 +58,8 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         addItem = view.findViewById(R.id.addItem);
         addItem.setOnClickListener(this);
         tableLayout = view.findViewById(R.id.tableLayout);
+
+        init = view.findViewById(R.id.init);
 
         showCurrentMoney = view.findViewById(R.id.showCurrentMoney);
         showParentMoney = view.findViewById(R.id.showParentMoney);
@@ -108,6 +112,40 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         showCurrentMoney.setOnClickListener(this);
         float initMyMoney = str - (float) parentMoney;
         showMyMoney.setText(initMyMoney+"");
+
+        init.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("是否重置数据库？")
+                        .setMessage("当前页面数据将恢复初始状态！")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sqLiteDatabase = dbHelper.getWritableDatabase();
+                        sqLiteDatabase.delete("mymoney", null,null);
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putFloat("account", 0);
+                        editor.commit();
+
+                        new AlertDialog.Builder(getActivity())
+                                .setTitle("重置已完成，应用将自动退出！")
+                                .setMessage("重新打开将导入预置数据").setCancelable(false)
+                                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(getActivity(), Object.class);
+
+                                        startActivity(intent);
+                                    }
+                                })
+                                .show();
+                    }
+                }).show();
+                return false;
+            }
+        });
         return view;
 
     }
