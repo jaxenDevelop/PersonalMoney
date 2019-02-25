@@ -12,8 +12,9 @@ public class MoneyDataBase extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-//        db.execSQL("create table mymoney (id integer primary key autoincrement,"+"date TEXT,"+"amount integer,"+"other TEXT); ");
-        db.execSQL("create table mymoney (id integer primary key autoincrement, date TEXT, amount integer, other TEXT);");
+        db.execSQL("create table mymoney (id integer primary key autoincrement, date TEXT, amount float, other TEXT);");
+        db.execSQL("create table decoration (id integer primary key autoincrement, date TEXT, amount float, other TEXT)");
+        db.execSQL("create table payfor (id integer primary key autoincrement, date TEXT, amount float, other TEXT)");
     }
 
     @Override

@@ -36,7 +36,7 @@ public class myFragAdapter extends FragmentPagerAdapter {
         this.container = container;
         this.object = object;
         /**position==2,不销毁**/
-        if (position != 2)
+        if (position != 0 && position !=2)
             super.destroyItem(container, position, object);
     }
 }

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:buttonGravity="top"
-        app:title="购房统计"
+        app:title="装修统计"
         app:titleTextColor="#FFFFFF"
         android:background="#00bcd4"
         app:layout_collapseMode="pin"
@@ -17,32 +17,35 @@
     </android.support.v7.widget.Toolbar>
 
     <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:backgroundTint="#83ccd2"
         android:background="@drawable/button_shape"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/setCurrentMoney"
+            android:id="@+id/all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="账户总额(元)"
+            android:text="总花费(元)"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/showCurrentMoney"
+            android:id="@+id/showAllCost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/setCurrentMoney"
-            android:layout_alignLeft="@+id/setCurrentMoney"
+            android:layout_below="@+id/all"
+            android:layout_alignLeft="@+id/all"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="48dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:text="1111.0"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
@@ -52,79 +55,24 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/addItem"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/showCurrentMoney"
+            android:textSize="18sp"
+            android:layout_alignBottom="@+id/showAllCost"
+            android:focusable="true"
+            android:layout_alignTop="@+id/showAllCost"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="48dp"
-            android:layout_alignTop="@+id/showCurrentMoney"
-            android:textSize="19sp"
+            android:gravity="center"
             android:src="@drawable/ic_add_circle_outline_white_24dp"
-            app:fabSize="auto"
-            android:background="#D4B072"
-            android:text="@string/addItem"
-            android:textColor="#FFFFFF" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/divider"
-            android:layout_below="@+id/showCurrentMoney"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
-            android:background="#eedeb0"
-            android:layout_width="match_parent"
-            android:layout_height="2dp" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/parentMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/divider"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:text="父母余额"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
+            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/myMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/parentMoney"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="48dp"
-            android:text="自己金额"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
-            android:textColor="@color/colorWhite"
-            android:textSize="14sp" />
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/showParentMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/parentMoney"
-            android:layout_alignLeft="@+id/parentMoney"
-            android:layout_marginTop="8dp"
-            android:text="0.0"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
-            android:textColor="@color/colorWhite"
-            android:textSize="22sp" />
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/showMyMoney"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/myMoney"
-            android:layout_alignLeft="@+id/myMoney"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="0.0"
-            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
-            android:textColor="@color/colorWhite"
-            android:textSize="22sp" />
 
     </RelativeLayout>
+
+
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_marginTop="16dp"

@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         /**初始化FragmentList**/
         list = new ArrayList<>();
         list.add(new NoteMoneyFragment());
+        list.add(new DecorationFragment());
+        list.add(new PayForFragment());
 
         /**viewpager初始化**/
         myFragAdapter = new myFragAdapter(getSupportFragmentManager(), list);

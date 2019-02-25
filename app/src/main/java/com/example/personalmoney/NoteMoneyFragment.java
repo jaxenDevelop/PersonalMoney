@@ -1,8 +1,8 @@
 package com.example.personalmoney;
-
+/**统计购房花费金额
+ * 包含父母装入与个人存款**/
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,9 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.InputType;
@@ -26,16 +24,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.roger.gifloadinglibrary.GifLoadingView;
-
-import java.util.ArrayList;
 
 import static android.view.Gravity.CENTER;
 
@@ -45,15 +38,14 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
     private TableLayout tableLayout;
     private SharedPreferences sp, sharedPreferences;
     private Handler handler;
-    private int CurrentMoney;
     private MoneyDataBase dbHelper;
     private SQLiteDatabase sqLiteDatabase;
 
     private AppCompatTextView showCurrentMoney, showParentMoney, showMyMoney;
-    private static int parentMoney = 0;
+    private static float parentMoney = 0;
     private static float myMoney = 0.0f;
     private static float currentMoney = 0.0f;
-    private static int newAddMoney = 0;
+    private static float newAddMoney = 0;
 
     @SuppressLint("HandlerLeak")
     @Nullable
@@ -121,13 +113,16 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
     }
 
 
-    private void addDefaultData(ContentValues cs, SQLiteDatabase sd, String date, int amount, String other)
+    public static void addDefaultData(ContentValues cs, SQLiteDatabase sd, String date, int amount, String other, int code)
     {
         cs.clear();
         cs.put("date", date);
         cs.put("amount", amount);
         cs.put("other", other);
+        if (code == 0)
         sd.insert("mymoney", null, cs);
+        else if (code == 2)
+            sd.insert("payfor", null, cs);
     }
 
     private void initDataBaseData() {
@@ -137,32 +132,32 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         if (!cursor.moveToFirst())
         {
             cursor.close();
-            addDefaultData(contentValues, sqLiteDatabase,"2018-02-27", 125100, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-03-18", -5000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-03-26", -8000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-04-09", -2000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-04-11", -4000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-07-20", 60000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-08-07", -10000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-08-08", -20000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-08-09", -30000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2018-10-17", 4935, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-01", 140000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-02", -50000, "保证金");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-07", -2000, "担保费");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-08", 195000, "妈妈转入");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 300000, "姐姐转入");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 400000, "爸爸转入");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-11", -700000, "购房首付款");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-22", -5000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-23", -10000, "无");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-03", 40000, "爸爸转入");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-09", 115000, "农商行转入");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-11", 102107, "邮政储蓄转入");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -530000, "首付款第二批");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -10000, "中介费");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -97413, "契税增值税");
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -2500, "打点费");
+            addDefaultData(contentValues, sqLiteDatabase,"2018-02-27", 125100, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-03-18", -5000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-03-26", -8000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-04-09", -2000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-04-11", -4000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-07-20", 60000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-08-07", -10000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-08-08", -20000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-08-09", -30000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2018-10-17", 4935, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-01", 140000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-02", -50000, "保证金", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-07", -2000, "担保费", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-08", 195000, "妈妈转入", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 300000, "姐姐转入", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 400000, "爸爸转入", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-11", -700000, "购房首付款", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-22", -5000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-01-23", -10000, "无", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-03", 40000, "爸爸转入", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-09", 115000, "农商行转入", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-11", 102107, "邮政储蓄转入", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -530000, "首付款第二批", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -10000, "中介费", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -97413, "契税增值税", 0);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -2500, "打点费", 0);
 
             /**读数据**/
             final Cursor cursorNew = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
@@ -201,12 +196,12 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                     message.obj = tableRow;
                     handler.sendMessage(message);
 
-                    parentMoney += Integer.parseInt(amount);
+                    parentMoney += Float.parseFloat(amount);
 
                 }while (cursorNew.moveToNext());
             }
 
-            Toast.makeText(getActivity(),"初始化数据库完成！", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(),"购房统计数据库初始化完成！", Toast.LENGTH_LONG).show();
         }
 
         else if (cursor != null && cursor.moveToFirst()) {
@@ -243,7 +238,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                 message.obj = tableRow;
                 handler.sendMessage(message);
 
-                parentMoney += Integer.parseInt(amount);
+                parentMoney += Float.parseFloat(amount);
             } while (cursor.moveToNext());
         }
     }
@@ -253,7 +248,7 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         switch (v.getId())
         {
             case R.id.addItem:
-                Intent intent = new Intent(getActivity(), FillInfo.class);
+                Intent intent = new Intent(getActivity(), FillMoneyActivity.class);
                 startActivityForResult(intent, 1);
                 break;
 
@@ -357,8 +352,8 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         message.what = 0;
                         message.obj = tableRow;
 
-                        parentMoney += Integer.parseInt(amount);
-                        newAddMoney = Integer.parseInt(amount);
+                        parentMoney += Float.parseFloat(amount);
+                        newAddMoney = Float.parseFloat(amount);
 
 
                         handler.sendMessage(message);

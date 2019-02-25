@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FillInfo"
+        <activity android:name=".FillMoneyActivity"
             android:theme="@style/DialogActivityTheme"/>
     </application>
 

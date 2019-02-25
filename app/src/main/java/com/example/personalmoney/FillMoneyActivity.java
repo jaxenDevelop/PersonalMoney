@@ -15,11 +15,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 
-public class FillInfo extends AppCompatActivity implements View.OnClickListener {
+public class FillMoneyActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText train_online, train_offline, other;
     private Intent intent;
-    private String TITLE;
     private AppCompatButton ok;
 
     @Override
