@@ -29,15 +29,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import static android.view.Gravity.CENTER;
 
-public class NoteMoneyFragment extends Fragment implements View.OnClickListener {
+public class NoteMoneyFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
 
     private AppCompatImageView addItem;
     private TableLayout tableLayout;
-    private SharedPreferences sp, sharedPreferences;
+    private SharedPreferences sharedPreferences;
     private Handler handler;
     private MoneyDataBase dbHelper;
     private android.support.v7.widget.Toolbar init;
@@ -57,24 +56,21 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
 
         addItem = view.findViewById(R.id.addItem);
         addItem.setOnClickListener(this);
+
         tableLayout = view.findViewById(R.id.tableLayout);
-
         init = view.findViewById(R.id.init);
-
         showCurrentMoney = view.findViewById(R.id.showCurrentMoney);
         showParentMoney = view.findViewById(R.id.showParentMoney);
         showMyMoney = view.findViewById(R.id.showMyMoney);
 
-        sp = getActivity().getSharedPreferences("AllMoneyFile", Context.MODE_PRIVATE);
-        sharedPreferences = getActivity().getSharedPreferences("MyCurrentAllMoney", Context.MODE_PRIVATE);
-        Float str = sharedPreferences.getFloat("account", 0.0f);
-        currentMoney = str;
-
-        showCurrentMoney.setText(str+"");
-
         dbHelper = new MoneyDataBase(getActivity());
 
+        sharedPreferences = getActivity().getSharedPreferences("MyCurrentAllMoney", Context.MODE_PRIVATE);
+        currentMoney = sharedPreferences.getFloat("account", 0.0f);
+        showCurrentMoney.setOnClickListener(this);
+        showCurrentMoney.setText(currentMoney+"");
 
+        /**handler逻辑**/
         handler = new Handler()
         {
             @Override
@@ -84,22 +80,24 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                 {
                     case 0:
                         tableLayout.addView((View) msg.obj);
+
                         showParentMoney.setText(parentMoney+"");
+
                         currentMoney += newAddMoney;
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putFloat("account", currentMoney);
-                        editor.commit();
+                        editor.apply();
+
                         showCurrentMoney.setText(currentMoney+"");
-                        System.out.println("sendMessage:"+parentMoney);
-                        myMoney = currentMoney - (float) parentMoney;
-                        System.out.println("ceshi :"+myMoney);
+
+                        myMoney = currentMoney - parentMoney;
                         showMyMoney.setText(myMoney+"");
-                    break;
+                        break;
 
                     case 1:
                         currentMoney = Float.parseFloat(msg.obj.toString());
                         showCurrentMoney.setText(String.valueOf(currentMoney));
-                        myMoney = Float.parseFloat(msg.obj.toString()) - (float) parentMoney;
+                        myMoney = Float.parseFloat(msg.obj.toString()) - parentMoney;
                         showMyMoney.setText(myMoney+"");
                         break;
                 }
@@ -108,48 +106,17 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         };
 
         initDataBaseData();
+        initTableRow();
 
         showCurrentMoney.setOnClickListener(this);
-        float initMyMoney = str - (float) parentMoney;
+        float initMyMoney = currentMoney - parentMoney;
         showMyMoney.setText(initMyMoney+"");
 
-        init.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("是否重置数据库？")
-                        .setMessage("当前页面数据将恢复初始状态！")
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        sqLiteDatabase = dbHelper.getWritableDatabase();
-                        sqLiteDatabase.delete("mymoney", null,null);
+        init.setOnLongClickListener(this);
 
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putFloat("account", 0);
-                        editor.commit();
-
-                        new AlertDialog.Builder(getActivity())
-                                .setTitle("重置已完成，应用将自动退出！")
-                                .setMessage("重新打开将导入预置数据").setCancelable(false)
-                                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(getActivity(), Object.class);
-
-                                        startActivity(intent);
-                                    }
-                                })
-                                .show();
-                    }
-                }).show();
-                return false;
-            }
-        });
         return view;
 
     }
-
 
     public static void addDefaultData(ContentValues cs, SQLiteDatabase sd, String date, int amount, String other, int code)
     {
@@ -169,7 +136,6 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
         ContentValues contentValues = new ContentValues();
         if (!cursor.moveToFirst())
         {
-            cursor.close();
             addDefaultData(contentValues, sqLiteDatabase,"2018-02-27", 125100, "无", 0);
             addDefaultData(contentValues, sqLiteDatabase,"2018-03-18", -5000, "无", 0);
             addDefaultData(contentValues, sqLiteDatabase,"2018-03-26", -8000, "无", 0);
@@ -197,88 +163,32 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
             addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -97413, "契税增值税", 0);
             addDefaultData(contentValues, sqLiteDatabase,"2019-02-22", -2500, "打点费", 0);
 
-            /**读数据**/
-            final Cursor cursorNew = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
-
-            if (cursorNew.moveToFirst())
-            {
-                do {
-                    String date = cursorNew.getString(cursorNew.getColumnIndex("date"));
-                    String amount = cursorNew.getString(cursorNew.getColumnIndex("amount"));
-                    String other = cursorNew.getString(cursorNew.getColumnIndex("other"));
-
-                    TextView timeText = new TextView(getActivity());
-                    timeText.setText(date);
-                    timeText.setGravity(CENTER);
-                    timeText.setTextSize(22);
-
-
-                    TextView amountText = new TextView(getActivity());
-                    amountText.setText(amount);
-                    amountText.setGravity(CENTER);
-                    amountText.setTextSize(22);
-
-                    TextView otherText = new TextView(getActivity());
-                    other =  other == null ? "无":other;
-                    otherText.setText(other);
-                    otherText.setGravity(CENTER);
-                    otherText.setTextSize(22);
-
-                    TableRow tableRow = new TableRow(getActivity());
-                    tableRow.addView(timeText);
-                    tableRow.addView(amountText);
-                    tableRow.addView(otherText);
-
-                    Message message = Message.obtain();
-                    message.what = 0;
-                    message.obj = tableRow;
-                    handler.sendMessage(message);
-
-                    parentMoney += Float.parseFloat(amount);
-
-                }while (cursorNew.moveToNext());
-            }
+            cursor.close();
 
             Toast.makeText(getActivity(),"购房统计数据库初始化完成！", Toast.LENGTH_LONG).show();
         }
+    }
 
-        else if (cursor != null && cursor.moveToFirst()) {
+    private void initTableRow() {
+        sqLiteDatabase = dbHelper.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.query("mymoney", null, null, null, null, null, null);
+
+        if (cursor.moveToFirst())
+        {
             do {
                 String date = cursor.getString(cursor.getColumnIndex("date"));
                 String amount = cursor.getString(cursor.getColumnIndex("amount"));
                 String other = cursor.getString(cursor.getColumnIndex("other"));
-                System.out.println("游标：" + date + "  " + amount + " " + other);
-
-                TextView timeText = new TextView(getActivity());
-                timeText.setText(date);
-                timeText.setGravity(CENTER);
-                timeText.setTextSize(22);
-
-
-                TextView amountText = new TextView(getActivity());
-                amountText.setText(amount);
-                amountText.setGravity(CENTER);
-                amountText.setTextSize(22);
-
-                TextView otherText = new TextView(getActivity());
-                other =  other == null ? "55":other;
-                otherText.setText(other);
-                otherText.setGravity(CENTER);
-                otherText.setTextSize(22);
-
-                TableRow tableRow = new TableRow(getActivity());
-                tableRow.addView(timeText);
-                tableRow.addView(amountText);
-                tableRow.addView(otherText);
 
                 Message message = Message.obtain();
                 message.what = 0;
-                message.obj = tableRow;
+                message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
                 handler.sendMessage(message);
 
                 parentMoney += Float.parseFloat(amount);
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     @Override
@@ -365,43 +275,56 @@ public class NoteMoneyFragment extends Fragment implements View.OnClickListener 
                         contentValues.put("other", other);
                         sqLiteDatabase.insert("mymoney", null, contentValues);
 
-                        TextView timeText = new TextView(getActivity());
-                        timeText.setText(time);
-                        timeText.setGravity(CENTER);
-                        timeText.setTextSize(22);
-
-
-                        TextView amountText = new TextView(getActivity());
-                        amountText.setText(amount);
-                        amountText.setGravity(CENTER);
-                        amountText.setTextSize(22);
-
-                        TextView otherText = new TextView(getActivity());
-                        otherText.setText(other);
-                        otherText.setGravity(CENTER);
-                        otherText.setTextSize(22);
-
-                        TableRow tableRow = new TableRow(getActivity());
-                        tableRow.addView(timeText);
-                        tableRow.addView(amountText);
-                        tableRow.addView(otherText);
-
                         Message message = Message.obtain();
                         message.what = 0;
-                        message.obj = tableRow;
+                        message.obj = new setTableRow().setTableRow(time, amount, other, getActivity());
 
                         parentMoney += Float.parseFloat(amount);
                         newAddMoney = Float.parseFloat(amount);
 
-
                         handler.sendMessage(message);
-
-                        System.out.println("parent:"+parentMoney);
 
                     }
                 }.start();
                 break;
 
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.init:
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("是否重置数据库？")
+                        .setMessage("当前页面数据将恢复初始状态！")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sqLiteDatabase = dbHelper.getWritableDatabase();
+                                sqLiteDatabase.delete("mymoney", null,null);
+
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putFloat("account", 0);
+                                editor.commit();
+
+                                new AlertDialog.Builder(getActivity())
+                                        .setTitle("重置已完成，应用将自动退出！")
+                                        .setMessage("重新打开将导入预置数据").setCancelable(false)
+                                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent intent = new Intent(getActivity(), Object.class);
+
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }).show();
+                break;
+        }
+        return false;
     }
 }

@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/parentMoney"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="48dp"
+            android:layout_marginEnd="24dp"
             android:text="当前年度总收入："
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"

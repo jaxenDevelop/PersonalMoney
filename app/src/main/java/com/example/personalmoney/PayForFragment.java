@@ -267,31 +267,9 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
                     String amount = cursorNew.getString(cursorNew.getColumnIndex("amount"));
                     String other = cursorNew.getString(cursorNew.getColumnIndex("other"));
 
-                    TextView timeText = new TextView(getActivity());
-                    timeText.setText(date);
-                    timeText.setGravity(CENTER);
-                    timeText.setTextSize(22);
-
-
-                    TextView amountText = new TextView(getActivity());
-                    amountText.setText(amount);
-                    amountText.setGravity(CENTER);
-                    amountText.setTextSize(22);
-
-                    TextView otherText = new TextView(getActivity());
-                    other =  other == null ? "无":other;
-                    otherText.setText(other);
-                    otherText.setGravity(CENTER);
-                    otherText.setTextSize(22);
-
-                    TableRow tableRow = new TableRow(getActivity());
-                    tableRow.addView(timeText);
-                    tableRow.addView(amountText);
-                    tableRow.addView(otherText);
-
                     Message message = Message.obtain();
                     message.what = 0;
-                    message.obj = tableRow;
+                    message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
                     handler.sendMessage(message);
 
                     setAllCost();

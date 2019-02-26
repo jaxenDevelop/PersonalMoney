@@ -34,7 +34,8 @@ public class DecorationFragment extends Fragment implements View.OnClickListener
     @SuppressLint("HandlerLeak")
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.layout_decoration, container, false);
         addItem = view.findViewById(R.id.addItem);
         addItem.setOnClickListener(this);
@@ -124,30 +125,9 @@ public class DecorationFragment extends Fragment implements View.OnClickListener
                         contentValues.put("other", other);
                         sqLiteDatabase.insert("decoration", null, contentValues);
 
-                        TextView timeText = new TextView(getActivity());
-                        timeText.setText(time);
-                        timeText.setGravity(CENTER);
-                        timeText.setTextSize(22);
-
-
-                        TextView amountText = new TextView(getActivity());
-                        amountText.setText(amount);
-                        amountText.setGravity(CENTER);
-                        amountText.setTextSize(22);
-
-                        TextView otherText = new TextView(getActivity());
-                        otherText.setText(other);
-                        otherText.setGravity(CENTER);
-                        otherText.setTextSize(22);
-
-                        TableRow tableRow = new TableRow(getActivity());
-                        tableRow.addView(timeText);
-                        tableRow.addView(amountText);
-                        tableRow.addView(otherText);
-
                         Message message = Message.obtain();
                         message.what = 0;
-                        message.obj = tableRow;
+                        message.obj = new setTableRow().setTableRow(time, amount, other, getActivity());
 
                         handler.sendMessage(message);
 
@@ -169,31 +149,9 @@ public class DecorationFragment extends Fragment implements View.OnClickListener
                 String amount = cursor.getString(cursor.getColumnIndex("amount"));
                 String other = cursor.getString(cursor.getColumnIndex("other"));
 
-                TextView timeText = new TextView(getActivity());
-                timeText.setText(date);
-                timeText.setGravity(CENTER);
-                timeText.setTextSize(22);
-
-
-                TextView amountText = new TextView(getActivity());
-                amountText.setText(amount);
-                amountText.setGravity(CENTER);
-                amountText.setTextSize(22);
-
-                TextView otherText = new TextView(getActivity());
-                other =  other == null ? "55":other;
-                otherText.setText(other);
-                otherText.setGravity(CENTER);
-                otherText.setTextSize(22);
-
-                TableRow tableRow = new TableRow(getActivity());
-                tableRow.addView(timeText);
-                tableRow.addView(amountText);
-                tableRow.addView(otherText);
-
                 Message message = Message.obtain();
                 message.what = 0;
-                message.obj = tableRow;
+                message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
                 handler.sendMessage(message);
 
             } while (cursor.moveToNext());
