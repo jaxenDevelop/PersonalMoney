@@ -196,30 +196,9 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
                         contentValues.put("other", other);
                         sqLiteDatabase.insert("payfor", null, contentValues);
 
-                        TextView timeText = new TextView(getActivity());
-                        timeText.setText(time);
-                        timeText.setGravity(CENTER);
-                        timeText.setTextSize(22);
-
-
-                        TextView amountText = new TextView(getActivity());
-                        amountText.setText(amount);
-                        amountText.setGravity(CENTER);
-                        amountText.setTextSize(22);
-
-                        TextView otherText = new TextView(getActivity());
-                        otherText.setText(other);
-                        otherText.setGravity(CENTER);
-                        otherText.setTextSize(22);
-
-                        TableRow tableRow = new TableRow(getActivity());
-                        tableRow.addView(timeText);
-                        tableRow.addView(amountText);
-                        tableRow.addView(otherText);
-
                         Message message = Message.obtain();
                         message.what = 0;
-                        message.obj = tableRow;
+                        message.obj = new setTableRow().setTableRow(time, amount, other, getActivity());
 
                         handler.sendMessage(message);
 
@@ -280,38 +259,15 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
             Toast.makeText(getActivity(),"工资统计数据库初始化完成！", Toast.LENGTH_LONG).show();
         }
 
-        else if (cursor != null && cursor.moveToFirst()) {
+        else if (cursor.moveToFirst()) {
             do {
                 String date = cursor.getString(cursor.getColumnIndex("date"));
                 String amount = cursor.getString(cursor.getColumnIndex("amount"));
                 String other = cursor.getString(cursor.getColumnIndex("other"));
-                System.out.println("游标：" + date + "  " + amount + " " + other);
-
-                TextView timeText = new TextView(getActivity());
-                timeText.setText(date);
-                timeText.setGravity(CENTER);
-                timeText.setTextSize(22);
-
-
-                TextView amountText = new TextView(getActivity());
-                amountText.setText(amount);
-                amountText.setGravity(CENTER);
-                amountText.setTextSize(22);
-
-                TextView otherText = new TextView(getActivity());
-                other =  other == null ? "55":other;
-                otherText.setText(other);
-                otherText.setGravity(CENTER);
-                otherText.setTextSize(22);
-
-                TableRow tableRow = new TableRow(getActivity());
-                tableRow.addView(timeText);
-                tableRow.addView(amountText);
-                tableRow.addView(otherText);
 
                 Message message = Message.obtain();
                 message.what = 0;
-                message.obj = tableRow;
+                message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
                 handler.sendMessage(message);
 
                 setAllCost();
