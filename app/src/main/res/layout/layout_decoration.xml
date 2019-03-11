@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="装修花费(元)"
+            android:text="装修总花费(元)"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
