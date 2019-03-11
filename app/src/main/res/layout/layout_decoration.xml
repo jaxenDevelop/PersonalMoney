@@ -19,7 +19,7 @@
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="#83ccd2"
         android:background="@drawable/button_shape"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="总花费(元)"
+            android:text="装修花费(元)"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
@@ -75,7 +75,7 @@
 
 
     <android.support.v7.widget.AppCompatTextView
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -85,7 +85,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">
 

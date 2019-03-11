@@ -20,7 +20,7 @@
     <RelativeLayout
         android:orientation="horizontal"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="#706caa"
         android:background="@drawable/button_shape"
@@ -85,7 +85,7 @@
             android:layout_below="@+id/divider"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:text="上一年度总收入："
+            android:text="上一年度总收入"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
@@ -97,7 +97,7 @@
             android:layout_alignTop="@+id/parentMoney"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="24dp"
-            android:text="当前年度总收入："
+            android:text="当前年度总收入"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
@@ -132,7 +132,7 @@
 
 
     <android.support.v7.widget.AppCompatTextView
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
@@ -142,7 +142,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:fadingEdge="vertical"
         android:scrollbars="vertical">
 

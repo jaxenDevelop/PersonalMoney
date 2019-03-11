@@ -13,11 +13,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 
-public class FillMoneyActivity extends AppCompatActivity implements View.OnClickListener {
+public class FillMoneyActivity extends AppCompatActivity implements View.OnClickListener{
 
     private EditText train_online, train_offline, other;
+    private RadioGroup choose;
+    private RadioButton mf, zx;
     private Intent intent;
     private AppCompatButton ok;
 
@@ -37,6 +41,16 @@ public class FillMoneyActivity extends AppCompatActivity implements View.OnClick
         setFinishOnTouchOutside(true);
 
         setContentView(R.layout.layout_train_fillinfo);
+        intent = new Intent();
+        choose = findViewById(R.id.choose);
+
+        Intent intent1 = getIntent();
+//        if (intent1.getIntExtra("from" , 0) == 1)
+//            flag = 0;
+//        else if (intent1.getIntExtra("from" , 0) == 2)
+//            flag = 1;
+
+//        choose.setOnCheckedChangeListener(this);
 
         /**控件初始化**/
         train_online = findViewById(R.id.train_online);
@@ -46,11 +60,13 @@ public class FillMoneyActivity extends AppCompatActivity implements View.OnClick
 
         ok = findViewById(R.id.ok);
         ok.setOnClickListener(this);
-        intent = new Intent();
+
         train_online = findViewById(R.id.train_online);
         train_offline = findViewById(R.id.train_offline);
-
         other = findViewById(R.id.other);
+
+        mf = findViewById(R.id.mf);
+        zx = findViewById(R.id.zx);
     }
 
     @Override
@@ -67,6 +83,7 @@ public class FillMoneyActivity extends AppCompatActivity implements View.OnClick
                     intent.putExtra("TIME", train_online.getText().toString());
                     intent.putExtra("AMOUNT", train_offline.getText().toString());
                     intent.putExtra("OTHER", other.getText().toString());
+
                     setResult(1, intent);
                     finish();
                 }

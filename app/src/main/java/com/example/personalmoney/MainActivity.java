@@ -8,6 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.example.personalmoney.Fragment.FirstFundFragment;
+import com.example.personalmoney.Fragment.SecondHouseFragment;
+import com.example.personalmoney.Fragment.ThirdSalaryFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         /**初始化FragmentList**/
         list = new ArrayList<>();
-        list.add(new NoteMoneyFragment());
-        list.add(new DecorationFragment());
-        list.add(new PayForFragment());
+        list.add(new FirstFundFragment());
+        list.add(new SecondHouseFragment());
+        list.add(new ThirdSalaryFragment());
 
         /**viewpager初始化**/
         myFragAdapter = new myFragAdapter(getSupportFragmentManager(), list);

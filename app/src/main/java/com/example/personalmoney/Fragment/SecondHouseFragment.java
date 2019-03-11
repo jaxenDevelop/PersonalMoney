@@ -1,4 +1,4 @@
-package com.example.personalmoney;
+package com.example.personalmoney.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
@@ -20,9 +20,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.personalmoney.FillMoneyActivity;
+import com.example.personalmoney.MoneyDataBase;
+import com.example.personalmoney.R;
+import com.example.personalmoney.setTableRow;
+
 import static android.view.Gravity.CENTER;
 
-public class DecorationFragment extends Fragment implements View.OnClickListener {
+public class SecondHouseFragment extends Fragment implements View.OnClickListener {
 
     private AppCompatImageView addItem;
     private SQLiteDatabase sqLiteDatabase;
@@ -30,13 +35,15 @@ public class DecorationFragment extends Fragment implements View.OnClickListener
     private Handler handler;
     private TableLayout tableLayout;
     private AppCompatTextView showAllCost;
-    private static float allCost = 0.0f;
+    private float allCost = 0.0f;
     @SuppressLint("HandlerLeak")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.layout_decoration, container, false);
+
+        allCost = 0;
         addItem = view.findViewById(R.id.addItem);
         addItem.setOnClickListener(this);
         dbHelper = new MoneyDataBase(getActivity());
@@ -143,18 +150,19 @@ public class DecorationFragment extends Fragment implements View.OnClickListener
         sqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query("decoration", null, null, null, null, null, null);
 
-            if (cursor.moveToFirst()) {
-            do {
-                String date = cursor.getString(cursor.getColumnIndex("date"));
-                String amount = cursor.getString(cursor.getColumnIndex("amount"));
-                String other = cursor.getString(cursor.getColumnIndex("other"));
+            if (cursor.moveToFirst())
+            {
+                do {
+                    String date = cursor.getString(cursor.getColumnIndex("date"));
+                    String amount = cursor.getString(cursor.getColumnIndex("amount"));
+                    String other = cursor.getString(cursor.getColumnIndex("other"));
 
-                Message message = Message.obtain();
-                message.what = 0;
-                message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
-                handler.sendMessage(message);
+                    Message message = Message.obtain();
+                    message.what = 0;
+                    message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
+                    handler.sendMessage(message);
 
-            } while (cursor.moveToNext());
+                } while (cursor.moveToNext());
         }
     }
 }

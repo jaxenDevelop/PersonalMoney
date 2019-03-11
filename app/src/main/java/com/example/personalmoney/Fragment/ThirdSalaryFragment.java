@@ -1,11 +1,10 @@
-package com.example.personalmoney;
+package com.example.personalmoney.Fragment;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -20,14 +19,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.view.Gravity.CENTER;
-import static com.example.personalmoney.NoteMoneyFragment.addDefaultData;
+import com.example.personalmoney.FillMoneyActivity;
+import com.example.personalmoney.MoneyDataBase;
+import com.example.personalmoney.R;
+import com.example.personalmoney.setTableRow;
 
-public class PayForFragment extends Fragment implements View.OnClickListener {
+import static com.example.personalmoney.Fragment.FirstFundFragment.addDefaultData;
+
+public class ThirdSalaryFragment extends Fragment implements View.OnClickListener {
 
     private AppCompatImageView addItem;
     private SQLiteDatabase sqLiteDatabase;
@@ -168,6 +169,7 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
         {
             case R.id.addItem:
                 Intent intent = new Intent(getActivity(), FillMoneyActivity.class);
+                intent.putExtra("from", 2);
                 startActivityForResult(intent, 2);
                 break;
         }
@@ -235,6 +237,8 @@ public class PayForFragment extends Fragment implements View.OnClickListener {
             addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 4850, "奖金", 2);
             addDefaultData(contentValues, sqLiteDatabase,"2019-01-11", 2250, "奖金", 2);
             addDefaultData(contentValues, sqLiteDatabase,"2019-02-02", 997, "工资", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-28", 4470, "奖金", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-05", 1071.99, "工资", 2);
 
             /**读数据**/
             final Cursor cursorNew = sqLiteDatabase.query("payfor", null, null, null, null, null, null);
