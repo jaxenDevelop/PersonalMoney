@@ -45,12 +45,6 @@ public class FillMoneyActivity extends AppCompatActivity implements View.OnClick
         choose = findViewById(R.id.choose);
 
         Intent intent1 = getIntent();
-//        if (intent1.getIntExtra("from" , 0) == 1)
-//            flag = 0;
-//        else if (intent1.getIntExtra("from" , 0) == 2)
-//            flag = 1;
-
-//        choose.setOnCheckedChangeListener(this);
 
         /**控件初始化**/
         train_online = findViewById(R.id.train_online);
@@ -77,7 +71,7 @@ public class FillMoneyActivity extends AppCompatActivity implements View.OnClick
                 if (train_online.getText().toString().equals("") || train_offline.getText().toString().equals(""))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("日期和金额不能为空").setPositiveButton("ok", null).show();
+                    builder.setTitle("日期和份数不能为空").setPositiveButton("ok", null).show();
                 }
                 else {
                     intent.putExtra("TIME", train_online.getText().toString());

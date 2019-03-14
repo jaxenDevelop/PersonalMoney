@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">个人应用</string>
-    <string name="title_home">存款</string>
+    <string name="title_home">统计</string>
     <string name="addItem">新增</string>
     <string name="title_dashboard">装修</string>
     <string name="title_notifications">工资</string>

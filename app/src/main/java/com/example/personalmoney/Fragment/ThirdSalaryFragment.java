@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,13 @@ import com.example.personalmoney.MoneyDataBase;
 import com.example.personalmoney.R;
 import com.example.personalmoney.setTableRow;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import static com.example.personalmoney.Fragment.FirstFundFragment.addDefaultData;
 
 public class ThirdSalaryFragment extends Fragment implements View.OnClickListener {
@@ -33,15 +41,19 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
     private AppCompatImageView addItem;
     private SQLiteDatabase sqLiteDatabase;
     private MoneyDataBase dbHelper;
-    private AppCompatTextView showLastYearMoney, showCurrentYearMoney;
-    private static float lastYearMoney, currentYearMoney;
+    private AppCompatTextView showLastYearMoney, showCurrentYearMoney, showLastWeek, showCurrentWeek;
+    private static float lastYearMoney, currentYearMoney, currentWeekMoney , lastWeekMoney;
     private Handler handler;
     private android.support.v7.widget.Toolbar initPayFor;
     private TableLayout tableLayout;
     private AppCompatTextView showAllCost;
     private static float allGet = 0.0f;
     private long CYAmount;
-    private long LYAmount;
+
+    private int CurrenMonth, LastMonth;
+    private List mWeekList, mLastList;
+    private static String CurrentWeekOne, CurrentWeekSeven;
+
     @SuppressLint("HandlerLeak")
     @Nullable
     @Override
@@ -49,7 +61,17 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.layout_payfor, container, false);
 
         CYAmount = System.currentTimeMillis()/365/24/60/60/1000 + 1970;
-        LYAmount = CYAmount - 1;
+
+        CurrenMonth = Calendar.getInstance().get(Calendar.MONTH)+1;
+        LastMonth = CurrenMonth - 1;
+
+        mWeekList = new ArrayList<>();
+        mLastList = new ArrayList<>();
+
+        mWeekList = getWeekDayList(formatDate(System.currentTimeMillis(), "yyyy-MM-dd EEEE"), "yyyy-MM-dd");
+
+        mLastList = getWeekDayList(formatDate(System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000, "yyyy-MM-dd EEEE"), "yyyy-MM-dd");
+
         addItem = view.findViewById(R.id.addItem);
         addItem.setOnClickListener(this);
         dbHelper = new MoneyDataBase(getActivity());
@@ -57,6 +79,9 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         showAllCost = view.findViewById(R.id.showAllCost);
         showLastYearMoney = view.findViewById(R.id.showLastYearMoney);
         showCurrentYearMoney = view.findViewById(R.id.showCurrentYearMoney);
+        showLastWeek = view.findViewById(R.id.showLastWeek);
+        showCurrentWeek = view.findViewById(R.id.showCurrentWeek);
+
         showAllCost.setText("0.0");
         handler = new Handler()
         {
@@ -70,9 +95,12 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
                         showAllCost.setText(allGet+"");
                         break;
                     case 1:
-                        showAllCost.setText(allGet+"");
-                        showLastYearMoney.setText(lastYearMoney+"");
-                        showCurrentYearMoney.setText(currentYearMoney+"");
+                        showAllCost.setText(allGet * 16 + "");
+                        showLastYearMoney.setText(lastYearMoney * 16 + "");
+                        showCurrentYearMoney.setText(currentYearMoney * 16+"");
+
+                        showLastWeek.setText(lastWeekMoney * 16 + "");
+                        showCurrentWeek.setText(currentWeekMoney * 16 + "");
                         break;
                 }
 
@@ -80,7 +108,10 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         };
 
         initDataBaseData();
+
         setAllCost();
+
+
         initPayFor = view.findViewById(R.id.initPayFor);
         initPayFor.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -115,10 +146,49 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         return view;
     }
 
+
+    public static List<Long> getWeekDayList(String date, String formatSrt) {
+        // 存放每一天时间的集合
+        List<Long> weekMillisList = new ArrayList<Long>();
+        long dateMill = 0;
+        try {
+            // 获取date的毫秒值
+            dateMill = getMillis(date, formatSrt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        // Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(dateMill);
+        // 本周的第几天
+        int weekNumber = calendar.get(Calendar.DAY_OF_WEEK);
+        System.out.println("wNun:"+weekNumber);
+        // 获取本周一的毫秒值
+        long mondayMill = dateMill - 86400000 * (weekNumber - 2);
+
+        for (int i = 0; i < 7; i++) {
+            weekMillisList.add(mondayMill + 86400000 * i);
+        }
+        return weekMillisList;
+    }
+
+    public static long getMillis(String time, String formatSrt) throws ParseException {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(formatSrt);
+        return format.parse(time).getTime();
+    }
+
+    public static String formatDate(Long date, String format) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.format(date);
+    }
+
     private void setAllCost() {
         allGet = 0;
         lastYearMoney = 0;
         currentYearMoney = 0;
+        currentWeekMoney = 0;
+        lastWeekMoney = 0;
+
         sqLiteDatabase = dbHelper.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.query("payfor", null,null, null,null, null,null);
         if (cursor.moveToFirst())
@@ -130,7 +200,15 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         }
         cursor.close();
 
-        Cursor cursor1 = sqLiteDatabase.rawQuery("select sum(amount) as lastyearmoney from payfor where date like  ?", new String[]{LYAmount+"%"});
+        Cursor cursor1 = null;
+        if (LastMonth < 10)
+        {
+             cursor1 = sqLiteDatabase.rawQuery("select sum(amount) as lastyearmoney from payfor where date like  ?", new String[]{CYAmount + "-0" + LastMonth + "%"});
+        }
+        else if (LastMonth >= 10)
+        {
+             cursor1 = sqLiteDatabase.rawQuery("select sum(amount) as lastyearmoney from payfor where date like  ?", new String[]{CYAmount + "-" + LastMonth + "%"});
+        }
         if (cursor1.moveToFirst())
         {
             do {
@@ -140,7 +218,15 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         }
         cursor1.close();
 
-        Cursor cursor2 = sqLiteDatabase.rawQuery("select sum(amount) as currentyear from payfor where date like  ?", new String[]{CYAmount+"%"});
+        Cursor cursor2 = null;
+        if (CurrenMonth < 10)
+        {
+            cursor2 = sqLiteDatabase.rawQuery("select sum(amount) as currentyear from payfor where date like  ?", new String[]{CYAmount + "-0" + CurrenMonth + "%"});
+        }
+        else if (CurrenMonth > 10)
+        {
+            cursor2 = sqLiteDatabase.rawQuery("select sum(amount) as currentyear from payfor where date like  ?", new String[]{CYAmount + "-" + CurrenMonth + "%"});
+        }
         if (cursor2.moveToFirst())
         {
             do {
@@ -149,6 +235,59 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
             while (cursor2.moveToNext());
         }
         cursor2.close();
+
+        Cursor cursor3 = sqLiteDatabase.rawQuery("select sum(amount) as currentweek from payfor where " +
+                "date =  ? or " +
+                "date = ? or " +
+                "date = ? or " +
+                "date = ? or " +
+                "date = ? or " +
+                "date = ? or " +
+                "date = ?",
+                new String[]
+                        {       formatDate((Long) mWeekList.get(0), "yyyy-MM-dd"),
+                                formatDate((Long) mWeekList.get(1), "yyyy-MM-dd"),
+                                formatDate((Long) mWeekList.get(2), "yyyy-MM-dd"),
+                                formatDate((Long) mWeekList.get(3), "yyyy-MM-dd"),
+                                formatDate((Long) mWeekList.get(4), "yyyy-MM-dd"),
+                                formatDate((Long) mWeekList.get(5), "yyyy-MM-dd"),
+                                formatDate((Long) mWeekList.get(6), "yyyy-MM-dd")});
+
+        if (cursor3.moveToFirst())
+        {
+            do {
+                currentWeekMoney  = cursor3.getFloat(cursor3.getColumnIndex("currentweek"));
+
+            }
+            while (cursor3.moveToNext());
+        }
+        cursor3.close();
+
+          Cursor cursor4 = sqLiteDatabase.rawQuery("select sum(amount) as lastweek from payfor where " +
+                        "date =  ? or " +
+                        "date = ? or " +
+                        "date = ? or " +
+                        "date = ? or " +
+                        "date = ? or " +
+                        "date = ? or " +
+                        "date = ?",
+                new String[]
+                        {       formatDate((Long) mLastList.get(0), "yyyy-MM-dd"),
+                                formatDate((Long) mLastList.get(1), "yyyy-MM-dd"),
+                                formatDate((Long) mLastList.get(2), "yyyy-MM-dd"),
+                                formatDate((Long) mLastList.get(3), "yyyy-MM-dd"),
+                                formatDate((Long) mLastList.get(4), "yyyy-MM-dd"),
+                                formatDate((Long) mLastList.get(5), "yyyy-MM-dd"),
+                                formatDate((Long) mLastList.get(6), "yyyy-MM-dd")});
+
+        if (cursor4.moveToFirst())
+        {
+            do {
+               lastWeekMoney  = cursor4.getFloat(cursor4.getColumnIndex("lastweek"));
+            }
+            while (cursor4.moveToNext());
+        }
+        cursor4.close();
 
         new Thread()
         {
@@ -219,26 +358,36 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
         if (!cursor.moveToFirst())
         {
             cursor.close();
-            addDefaultData(contentValues, sqLiteDatabase,"2018-05-04", 4888, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-06-05", 3000, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-07-01", 500, "双过半奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-07-30", 5427, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-08-01", 776, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-08-30", 6798, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-09-05", 1538, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-09-29", 6980, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-10-08", 960, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-11-01", 7399, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-11-05", 918, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-11-30", 7230, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2018-12-05", 935, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-02", 24173, "年终奖", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-04", 1068, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-09", 4850, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-01-11", 2250, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-02", 997, "工资", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-02-28", 4470, "奖金", 2);
-            addDefaultData(contentValues, sqLiteDatabase,"2019-03-05", 1071.99, "工资", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-27", 3, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-27", 4, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-28", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-02-28", 4, "晚", 2);
+
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-01", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-01", 4, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-02", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-02", 4, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-03", 0, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-03", 2, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-04", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-04", 6, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-05", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-05", 6, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-06", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-06", 4, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-07", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-07", 5, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-08", 0, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-08", 1, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-09", 2, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-09", 4, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-11", 3, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-11", 4, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-12", 4, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-12", 5, "晚", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-13", 6, "中", 2);
+            addDefaultData(contentValues, sqLiteDatabase,"2019-03-13", 3, "晚", 2);
+
 
             /**读数据**/
             final Cursor cursorNew = sqLiteDatabase.query("payfor", null, null, null, null, null, null);
@@ -260,7 +409,7 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
                 }while (cursorNew.moveToNext());
             }
 
-            Toast.makeText(getActivity(),"工资统计数据库初始化完成！", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(),"订餐数据库初始化完成！", Toast.LENGTH_LONG).show();
         }
 
         else if (cursor.moveToFirst()) {
@@ -274,7 +423,6 @@ public class ThirdSalaryFragment extends Fragment implements View.OnClickListene
                 message.obj = new setTableRow().setTableRow(date, amount, other, getActivity());
                 handler.sendMessage(message);
 
-                setAllCost();
             } while (cursor.moveToNext());
         }
     }

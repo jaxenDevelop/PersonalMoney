@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:buttonGravity="top"
-        app:title="工资统计"
+        app:title="订餐统计"
         app:titleTextColor="#FFFFFF"
         android:background="#00bcd4"
         app:layout_collapseMode="pin"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
-            android:text="十四所总收入(元)"
+            android:text="丁丁精菜馆总支出(元)"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
@@ -85,7 +85,7 @@
             android:layout_below="@+id/divider"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:text="上一年度总收入"
+            android:text="上一月份总支出"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
@@ -97,7 +97,7 @@
             android:layout_alignTop="@+id/parentMoney"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="24dp"
-            android:text="当前年度总收入"
+            android:text="当前月份总支出"
             android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
             android:textColor="@color/colorWhite"
             android:textSize="14sp" />
@@ -120,6 +120,66 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/currentYear"
             android:layout_alignLeft="@+id/currentYear"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="0.0"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
+            android:textColor="@color/colorWhite"
+            android:textSize="22sp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/divider1"
+            android:layout_below="@+id/showLastYearMoney"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="#eedeb0"
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/lastWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/divider1"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="上周总支出"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/showLastWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lastWeek"
+            android:layout_alignLeft="@+id/parentMoney"
+            android:layout_marginTop="8dp"
+            android:text="0.0"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
+            android:textColor="@color/colorWhite"
+            android:textSize="22sp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/currentWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/lastWeek"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="24dp"
+            android:layout_alignStart="@+id/showCurrentYearMoney"
+            android:text="这周总支出"
+            android:textAppearance="@style/TextAppearance.Compat.Notification.Title"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/showCurrentWeek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/currentWeek"
+            android:layout_alignStart="@+id/currentYear"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             android:text="0.0"

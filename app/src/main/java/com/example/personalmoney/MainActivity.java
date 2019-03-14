@@ -31,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     viewPager.setCurrentItem(0);
                     return true;
-                case R.id.navigation_dashboard:
-                    viewPager.setCurrentItem(1);
-                    return true;
-                case R.id.navigation_notifications:
-                    viewPager.setCurrentItem(2);
-                    return true;
+//                case R.id.navigation_dashboard:
+//                    viewPager.setCurrentItem(1);
+//                    return true;
+//                case R.id.navigation_notifications:
+//                    viewPager.setCurrentItem(2);
+//                    return true;
             }
             return false;
         }
@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         /**初始化FragmentList**/
         list = new ArrayList<>();
-        list.add(new FirstFundFragment());
-        list.add(new SecondHouseFragment());
+//        list.add(new FirstFundFragment());
+//        list.add(new SecondHouseFragment());
         list.add(new ThirdSalaryFragment());
 
         /**viewpager初始化**/
